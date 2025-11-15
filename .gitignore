@@ -1,0 +1,44 @@
+# Cluster configuration
+config/cluster.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+/tmp/
+
+# SSH keys
+*.pem
+*.key
+
+# AWS
+.aws/
+
+# Terraform (if used later)
+*.tfstate
+*.tfstate.backup
+.terraform/
