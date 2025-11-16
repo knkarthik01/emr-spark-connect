@@ -1,4 +1,4 @@
-# Scaling SparkConnect on AWS EMR
+# Scaling SparkConnect on Amazon EMR on EC2
 
 > Production-ready multi-server SparkConnect architecture for high-concurrency workloads on Amazon EMR
 
