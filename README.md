@@ -21,6 +21,38 @@
 
 ## Problem Statement
 
+Many customers today submit Spark applications to Amazon EMR from edge nodes that have YARN and Spark client JARs installed. Interactive and batch jobs are launched via `spark-submit`, and drivers are created wherever the submit command runs (typically edge nodes or EMR primary nodes).
+
+With the introduction of Spark Connect, customers want to move to a thinner, more flexible client model where users connect to a remote Spark server endpoint instead of managing full Spark installations on their laptops or edge nodes. However, the default Spark Connect deployment pattern on EMR creates several challenges:
+
+1. **Single-endpoint bottleneck**
+
+   Spark Connect servers are usually deployed on the EMR primary node. All interactive clients connect to a single endpoint, which leads to:
+
+   - Concentration of drivers and sessions on one node  
+   - Memory and CPU pressure on the primary  
+   - Reduced reliability and noisy-neighbor issues in multi-tenant environments  
+
+2. **Lack of natural “cluster mode” distribution**
+
+   Spark Connect server processes are not trivially deployed in a way that exposes multiple predictable endpoints for a load balancer. As a result, it is non-trivial to spread Spark Connect servers and associated drivers across worker nodes while still presenting a **single, stable URL** to end users.
+
+3. **Under-utilized worker capacity**
+
+   EMR task nodes (workers) are where most executor work runs, but the driver and Spark Connect server pressure remains centralized on the primary. This limits horizontal scalability for interactive workloads and can cap overall cluster throughput.
+
+### Goal
+
+Design and implement a **multi–Spark Connect server architecture on Amazon EMR** that:
+
+- Runs **multiple Spark Connect servers on EMR task nodes** (workers)
+- Exposes a **single endpoint** to clients (via a lightweight load balancer or routing layer on the primary)
+- Distributes incoming Spark Connect sessions and drivers across workers (e.g., round-robin)
+- Improves **multi-tenant scale, isolation, and resource utilization** compared to a single-server deployment
+- Can be demonstrated with a **simple reference architecture, bootstrap scripts, and example clients**
+
+This repository captures the reference architecture, configuration, and demo code for this approach on Amazon EMR.
+
 ### Current State: Edge Node with YARN
 
 You're currently running Spark jobs using `spark-submit` from an edge node configured with YARN and Spark JARs. This works fine for batch jobs, but has limitations:
